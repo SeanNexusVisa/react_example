@@ -3,8 +3,32 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+import Container from '@material-ui/core/Container';
+import Paper from '@material-ui/core/Paper';
+import { makeStyles } from '@material-ui/core/styles';
+import { useDispatch, useSelector } from 'react-redux';
+import { addUser } from '../../actions/userAction';
+
+const useStyles = makeStyles(theme => ({
+    paper: {
+        padding: '10px 20px 10px 20px',
+        margin: '10px',
+    },
+    button: {
+        margin: '10px',
+    },
+
+}));
+
+
 
 const SignUpForm = () => {
+
+    const dispatch = useDispatch();
+    const allUser = useSelector(state => state.list);
+    const classes = useStyles();
+    //console.log(allUser);
+
     const validateSchema = yup.object({
         fullname: yup
             .string('Enter your full name')
@@ -25,63 +49,76 @@ const SignUpForm = () => {
 
     const formik = useFormik({
         initialValues: {
-            fullname: 'John Doe',
-            age: '18',
-            email: 'example@abc.com',
+            fullname: '',
+            age: '',
+            email: '',
         },
         validationSchema: validateSchema,
         onSubmit: values => {
-            console.log(values);
-            alert(JSON.stringify(values, null, 2));
+            dispatch(addUser(values));
+            //alert(JSON.stringify(values, null, 2));
         },
     });
-    
+
     return (
-        <div>
-            <form onSubmit={formik.handleSubmit}>
-                <TextField
-                    fullWidth
-                    id="fullname"
-                    name="fullname"
-                    label="Fullname"
-                    value={formik.values.fullname}
-                    onChange={formik.handleChange}
-                    error={formik.touched.fullname && Boolean(formik.errors.fullname)}
-                    helperText={formik.touched.fullname && formik.errors.fullname}
-                />
-                <TextField
-                    fullWidth
-                    id="age"
-                    name="age"
-                    label="Age"
-                    value={formik.values.age}
-                    onChange={formik.handleChange}
-                    error={formik.touched.age && Boolean(formik.errors.age)}
-                    helperText={formik.touched.age && formik.errors.age}
-                />
+        <Container component="main" maxWidth="xs">
+            <div>
+                <form onSubmit={formik.handleSubmit}>
+                    <TextField
+                        fullWidth
+                        id="fullname"
+                        name="fullname"
+                        label="Full name"
+                        value={formik.values.fullname}
+                        onChange={formik.handleChange}
+                        error={formik.touched.fullname && Boolean(formik.errors.fullname)}
+                        helperText={formik.touched.fullname && formik.errors.fullname}
+                    />
+                    <TextField
+                        fullWidth
+                        id="age"
+                        name="age"
+                        label="Age"
+                        value={formik.values.age}
+                        onChange={formik.handleChange}
+                        error={formik.touched.age && Boolean(formik.errors.age)}
+                        helperText={formik.touched.age && formik.errors.age}
+                    />
 
-                <TextField
-                    fullWidth
-                    id="email"
-                    name="email"
-                    label="Email"
-                    value={formik.values.email}
-                    onChange={formik.handleChange}
-                    error={formik.touched.email && Boolean(formik.errors.email)}
-                    helperText={formik.touched.email && formik.errors.email}
-                />
+                    <TextField
+                        fullWidth
+                        id="email"
+                        name="email"
+                        label="Email"
+                        value={formik.values.email}
+                        onChange={formik.handleChange}
+                        error={formik.touched.email && Boolean(formik.errors.email)}
+                        helperText={formik.touched.email && formik.errors.email}
+                    />
 
-                <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    color="primary"
-                >
-                    Submit
-                </Button>
+                    <Button
+                        className={classes.button}
+                        type="submit"
+                        variant="contained"
+                        color="primary"
+                    >
+                        Submit
+                    </Button>
 
-            </form>
-        </div>
+                </form>
+
+            </div>
+            <div>
+                {allUser.map((user, key) => (
+                    <Paper className={classes.paper} key={key} elevation={3} >
+                        <p>Full name: {user.fullname}</p>
+                        <p>Age: {user.age}</p>
+                        <p>Email: {user.email}</p>
+                    </Paper>
+                ))}
+            </div>
+
+        </Container>
 
     );
 
