@@ -6,7 +6,7 @@ import TextField from '@material-ui/core/TextField';
 import Container from '@material-ui/core/Container';
 import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core/styles';
-import { useDispatch, useSelector } from 'react-redux';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import { addUser } from '../../actions/userAction';
 
 const useStyles = makeStyles(theme => ({
@@ -22,9 +22,10 @@ const useStyles = makeStyles(theme => ({
 
 
 
-const SignUpForm = () => {
+const SignUpForm = (props) => {
 
-    const dispatch = useDispatch();
+    //const { payload } = props;
+    //const dispatch = useDispatch();
     const allUser = useSelector(state => state.list);
     const classes = useStyles();
     //console.log(allUser);
@@ -55,7 +56,8 @@ const SignUpForm = () => {
         },
         validationSchema: validateSchema,
         onSubmit: values => {
-            dispatch(addUser(values));
+            props.addUser(values);
+            //dispatch(addUser(values));
             //alert(JSON.stringify(values, null, 2));
         },
     });
@@ -124,5 +126,12 @@ const SignUpForm = () => {
 
 };
 
+const mapStateToProps = (state) => {
+    return {
+        payload: state.payload,
+    }
+}
 
-export default SignUpForm;
+//export default SignUpForm;
+
+export default connect(mapStateToProps, {addUser})(SignUpForm);
